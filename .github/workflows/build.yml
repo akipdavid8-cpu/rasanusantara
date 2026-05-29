@@ -1,4 +1,4 @@
-name: Build Android APK
+gname: Build Android APK
 
 on:
   workflow_dispatch:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Add Android Platform
         working-directory: project
-        run: npx cap add android
+        run: npx cap add android --skip-appid-validation
 
       - name: Sync Capacitor
         working-directory: project
