@@ -2,38 +2,49 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Unzip rasa-nusantara
+      - name: Unzip Project
         run: unzip rasa-nusantara.zip -d project
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Install dependencies
+      - name: Install Dependencies
+        working-directory: project
         run: npm install
-        working-directory: project
 
-      - name: Build web app
+      - name: Build Web
+        working-directory: project
         run: npm run build
-        working-directory: project
 
-      - name: Add Android platform
-        run: npx cap add android
+      - name: Fix Capacitor Config
         working-directory: project
+        run: |
+          cat > capacitor.config.json <<EOF
+          {
+            "appId": "com.akipdavid.rasanusantara",
+            "appName": "Rasa Nusantara",
+            "webDir": "dist"
+          }
+          EOF
+
+      - name: Add Android Platform
+        working-directory: project
+        run: npx cap add android
 
       - name: Sync Capacitor
-        run: npx cap sync android
         working-directory: project
+        run: npx cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -42,8 +53,8 @@ jobs:
           java-version: 21
 
       - name: Build APK
-        run: ./gradlew assembleDebug
         working-directory: project/android
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
