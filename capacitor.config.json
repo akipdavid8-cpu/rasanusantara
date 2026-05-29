@@ -1,0 +1,9 @@
+{
+  "appId": "app.lovable.87d7a07a6743405ebf35a325ec006c2f",
+  "appName": "Rasa Nusantara",
+  "webDir": "dist",
+  "server": {
+    "url": "https://87d7a07a-6743-405e-bf35-a325ec006c2f.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
